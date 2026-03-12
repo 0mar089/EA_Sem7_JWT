@@ -16,11 +16,13 @@ export class MensajeService {
         this.io.on('connection', (socket: Socket) => {
             Logging.info(`Socket conectado: ${socket.id}`);
 
-            // Unirse a una sala de organización
+            /* 
+            // Unirse a una sala de organización (DESACTIVADO PARA CHAT GLOBAL)
             socket.on('join-organization', (organizacionId: string) => {
                 socket.join(`org-${organizacionId}`);
                 Logging.info(`Socket ${socket.id} se unió a organización ${organizacionId}`);
             });
+            */
 
             // Escuchar mensajes incoming
             socket.on('message', async (data: { usuario: string, organizacion: string, contenido: string }) => {
