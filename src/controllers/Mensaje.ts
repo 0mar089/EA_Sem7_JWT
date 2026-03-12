@@ -22,6 +22,23 @@ export const obtenerMensajesPorOrganizacion = async (req: Request, res: Response
 };
 
 /**
+ * Obtener todos los mensajes (Global)
+ */
+export const obtenerTodosLosMensajes = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const mensajes = await MensajeModel.find()
+            .populate('usuario', 'name email')
+            .sort({ createdAt: 1 }); // Sorted by date
+
+        Logging.info(`Todos los mensajes obtenidos`);
+        return res.status(200).json(mensajes);
+    } catch (error) {
+        Logging.error(error);
+        return res.status(500).json({ message: 'Error al obtener todos los mensajes' });
+    }
+};
+
+/**
  * Obtener mensajes no leídos de un usuario
  */
 export const obtenerMensajesNoLeidos = async (req: Request, res: Response, next: NextFunction) => {

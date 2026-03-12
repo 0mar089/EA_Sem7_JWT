@@ -19,8 +19,7 @@
         "mongoose": "^6.13.9",
         "socket.io": "^4.8.3",
         "swagger-jsdoc": "^6.2.8",
-        "swagger-ui-express": "^5.0.1",
-        "tsc": "^2.0.4"
+        "swagger-ui-express": "^5.0.1"
     },
     "devDependencies": {
         "@types/cors": "^2.8.19",

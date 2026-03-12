@@ -34,8 +34,8 @@ export class MensajeService {
                         data.organizacion
                     );
 
-                    // Emitir el mensaje a todos los clientes en la organización
-                    this.io.to(`org-${data.organizacion}`).emit('message', nuevoMensaje);
+                    // Emitir el mensaje a TODOS los clientes conectados (Chat Global)
+                    this.io.emit('message', nuevoMensaje);
                 } catch (error) {
                     Logging.error(`Error al guardar mensaje: ${error}`);
                     socket.emit('error', { message: 'Error al guardar el mensaje' });

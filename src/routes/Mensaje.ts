@@ -4,6 +4,12 @@ import * as MensajeController from '../controllers/Mensaje';
 const router = express.Router();
 
 /**
+ * Obtener todos los mensajes (Global)
+ * GET /mensajes
+ */
+router.get('/', MensajeController.obtenerTodosLosMensajes);
+
+/**
  * Obtener todos los mensajes de una organización
  * GET /mensajes/organizacion/:organizacionId
  */
