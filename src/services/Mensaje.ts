@@ -76,7 +76,8 @@ export class MensajeService {
             leido: false
         });
 
-        return await mensaje.save();
+        const savedMensaje = await mensaje.save();
+        return await savedMensaje.populate('usuario', 'name email');
     }
 
     /**

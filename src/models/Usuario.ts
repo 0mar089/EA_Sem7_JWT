@@ -7,7 +7,9 @@ export interface IUsuario {
     organizacion: mongoose.Types.ObjectId | string;
 }
 
-export interface IUsuarioModel extends IUsuario, Document {}
+export interface IUsuarioModel extends IUsuario, Document {
+    createdAt: Date;
+}
 
 const UsuarioSchema: Schema = new Schema(
     {

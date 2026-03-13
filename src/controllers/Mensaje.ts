@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import Logging from '../library/Logging';
 import MensajeModel from '../models/Mensaje';
+import UsuarioModel from '../models/Usuario';
 import { MensajeService } from '../services/Mensaje';
 
 /**
@@ -9,7 +10,21 @@ import { MensajeService } from '../services/Mensaje';
 export const obtenerMensajesPorOrganizacion = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { organizacionId } = req.params;
-        const mensajes = await MensajeModel.find({ organizacion: organizacionId })
+        const { usuarioId } = req.query;
+
+        let query: any = { organizacion: organizacionId };
+
+        if (usuarioId) {
+            const usuario = await UsuarioModel.findById(usuarioId);
+            if (usuario) {
+                query.createdAt = { $gte: usuario.createdAt };
+                Logging.info(`Filtrando mensajes para el usuario ${usuario.name} creados después de ${usuario.createdAt}`);
+            } else {
+                Logging.info(`Usuario ${usuarioId} no encontrado para filtrar mensajes`);
+            }
+        }
+
+        const mensajes = await MensajeModel.find(query)
             .populate('usuario', 'name email')
             .sort({ createdAt: -1 });
 
@@ -26,7 +41,20 @@ export const obtenerMensajesPorOrganizacion = async (req: Request, res: Response
  */
 export const obtenerTodosLosMensajes = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const mensajes = await MensajeModel.find()
+        const { usuarioId } = req.query;
+        let query: any = {};
+
+        if (usuarioId) {
+            const usuario = await UsuarioModel.findById(usuarioId);
+            if (usuario) {
+                query.createdAt = { $gte: usuario.createdAt };
+                Logging.info(`Filtrando TODOS los mensajes para el usuario ${usuario.name} creados después de ${usuario.createdAt}`);
+            } else {
+                Logging.info(`Usuario ${usuarioId} no encontrado para filtrar mensajes globales`);
+            }
+        }
+
+        const mensajes = await MensajeModel.find(query)
             .populate('usuario', 'name email')
             .sort({ createdAt: 1 }); // Sorted by date
 
