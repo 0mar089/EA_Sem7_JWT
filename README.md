@@ -1,9 +1,4 @@
 
-## 🎓 Ejercicio de Seminario
-
-En la carpeta `ejercicio-seminario/` encontrarás material didáctico sobre cómo implementar relaciones entre modelos en Mongoose (Manual vs Virtuals). 
-
----
 
 ## Instalación y ejecución
 
