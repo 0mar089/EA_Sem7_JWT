@@ -43,10 +43,6 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  /**
-   * Registra un nuevo usuario. NO genera token.
-   * Si tiene éxito, redirige a /login.
-   */
   register(payload: RegisterPayload): Observable<any> {
     return this.http.post(`${API_URL}/usuarios`, payload).pipe(
       tap(() => {
@@ -55,9 +51,6 @@ export class AuthService {
     );
   }
 
-  /**
-   * Refresca el token actual.
-   */
   refreshToken(): Observable<{ accessToken: string }> {
     return this.http.post<{ accessToken: string }>(`${API_URL}/auth/refresh`, {}, { withCredentials: true }).pipe(
       tap((res) => {
@@ -66,9 +59,6 @@ export class AuthService {
     );
   }
 
-  /**
-   * Inicia sesión. Si tiene éxito, guarda el token y redirige a /home.
-   */
   login(payload: LoginPayload): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${API_URL}/auth/login`, payload, { withCredentials: true }).pipe(
       tap((res) => {
@@ -78,37 +68,47 @@ export class AuthService {
     );
   }
 
-  /** Guarda el token en localStorage */
   saveToken(token: string): void {
     localStorage.setItem(TOKEN_KEY, token);
   }
 
-  /**
-   * Petición protegida para probar el token (devuelve todos los usuarios).
-   */
-  getUsuarios(): Observable<Usuario[]> {
-    return this.http.get<Usuario[]>(`${API_URL}/usuarios`);
-  }
-
-  /** Obtiene el token del localStorage */
   getToken(): string | null {
     return localStorage.getItem(TOKEN_KEY);
   }
 
-  /** Comprueba si el usuario está autenticado */
   isAuthenticated(): boolean {
     return !!this.getToken();
   }
 
-  /** Cierra sesión eliminando el token */
+  private decodeToken(): any | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      const payload = token.split('.')[1];           // el JWT tiene 3 partes: header.payload.signature
+      const decoded = atob(payload);                 // base64 → string JSON
+      return JSON.parse(decoded);
+    } catch {
+      return null;
+    }
+  }
+
+  getUserRole(): string | null {
+    return this.decodeToken()?.role ?? null;
+  }
+
+  hasRole(role: string): boolean {
+    return this.getUserRole() === role;
+  }
+
+  getUsuarios(): Observable<Usuario[]> {
+    return this.http.get<Usuario[]>(`${API_URL}/usuarios`);
+  }
+
   logout(): void {
     this.http.post(`${API_URL}/auth/logout`, {}, { withCredentials: true }).subscribe({
-      next: () => {
-        // noop
-      },
-      error: () => {
-        // noop
-      }
+      next: () => {},
+      error: () => {}
     });
 
     localStorage.removeItem(TOKEN_KEY);

@@ -3,8 +3,14 @@ import mongoose from "mongoose";
 import { config } from "../config/config";
 import { IJwtPayload } from "../models/JwtPayload";
 
-export const generateAccessToken = (userId: string, name: string, email: string, organizacion: mongoose.Types.ObjectId | string) => {
-    const payload: IJwtPayload = { id: userId, name, email, organizacion: String(organizacion) };
+export const generateAccessToken = (
+    userId: string,
+    name: string,
+    email: string,
+    organizacion: mongoose.Types.ObjectId | string,
+    role: string 
+) => {
+    const payload: IJwtPayload = { id: userId, name, email, organizacion: String(organizacion), role }; // 👈 incluido en payload
     return jwt.sign(
         payload,
         config.jwt.accessSecret,
@@ -12,8 +18,14 @@ export const generateAccessToken = (userId: string, name: string, email: string,
     );
 };
 
-export const generateRefreshToken = (userId: string, name: string, email: string, organizacion: mongoose.Types.ObjectId | string) => {
-    const payload: IJwtPayload = { id: userId, name, email, organizacion: String(organizacion) };
+export const generateRefreshToken = (
+    userId: string,
+    name: string,
+    email: string,
+    organizacion: mongoose.Types.ObjectId | string,
+    role: string
+) => {
+    const payload: IJwtPayload = { id: userId, name, email, organizacion: String(organizacion), role }; // 👈 incluido en payload
     return jwt.sign(
         payload,
         config.jwt.refreshSecret,

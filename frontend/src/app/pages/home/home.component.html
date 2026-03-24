@@ -31,6 +31,15 @@
     </ul>
   </div>
 
+  <!-- 👇 solo visible si el usuario es admin -->
+  <div *ngIf="isAdmin" style="margin: 20px 0; padding: 15px; border: 1px solid #ffc107; border-radius: 6px; background: #fff9e6;">
+    <h3 style="margin: 0 0 10px;">Zona de administración</h3>
+    <p style="margin: 0 0 10px;">Tienes acceso al panel de administración.</p>
+    <button class="btn" (click)="goToAdmin()" style="background: #ffc107; color: #212529;">
+      Ir al panel Admin
+    </button>
+  </div>
+
   <button class="btn" (click)="logout()">
     Cerrar Sesión
   </button>

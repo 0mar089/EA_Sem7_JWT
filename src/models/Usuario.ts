@@ -1,5 +1,4 @@
 import mongoose, { Document, Schema } from 'mongoose';
-
 import bcrypt from 'bcryptjs';
 
 export interface IUsuario {
@@ -7,6 +6,7 @@ export interface IUsuario {
     email: string;
     password: string;
     organizacion: mongoose.Types.ObjectId | string;
+    role: 'user' | 'admin'; 
 }
 
 export interface IUsuarioModel extends IUsuario, Document {}
@@ -16,7 +16,8 @@ const UsuarioSchema: Schema = new Schema(
         name: { type: String, required: true },
         email: { type: String, required: true, unique: true },
         password: { type: String, required: true },
-        organizacion: { type: Schema.Types.ObjectId, required: true, ref: 'Organizacion' }
+        organizacion: { type: Schema.Types.ObjectId, required: true, ref: 'Organizacion' },
+        role: { type: String, enum: ['user', 'admin'], default: 'user' }
     },
     {
         timestamps: true,
@@ -25,10 +26,7 @@ const UsuarioSchema: Schema = new Schema(
 );
 
 UsuarioSchema.pre<IUsuarioModel>('save', async function (next) {
-    if (!this.isModified('password')) {
-        return next();
-    }
-
+    if (!this.isModified('password')) return next();
     try {
         const salt = await bcrypt.genSalt(10);
         this.password = await bcrypt.hash(this.password, salt);

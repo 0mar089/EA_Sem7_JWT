@@ -1,0 +1,33 @@
+<div>
+  <h2>Panel de administración</h2>
+  <p>Solo los usuarios con rol <strong>admin</strong> pueden acceder aquí.</p>
+
+  <div *ngIf="successMessage" class="alert" style="background: #d4edda; color: #155724; padding: 10px; margin: 10px 0; border-radius: 4px;">
+    {{ successMessage }}
+  </div>
+
+  <div *ngIf="error" class="alert" style="margin-top: 10px;">
+    {{ error }}
+  </div>
+
+  <div style="margin: 20px 0;">
+    <h3>Gestión de organizaciones</h3>
+
+    <div *ngIf="loading">Cargando...</div>
+
+    <ul *ngIf="organizaciones.length > 0" class="list" style="margin-top: 15px;">
+      <li *ngFor="let org of organizaciones" class="card"
+          style="flex-direction: row; justify-content: space-between; align-items: center; gap: 10px;">
+        <span class="name">{{ org.name }}</span>
+        <button class="btn" (click)="eliminarOrganizacion(org._id)"
+                style="background: #dc3545; font-size: 12px; padding: 4px 10px;">
+          Eliminar
+        </button>
+      </li>
+    </ul>
+
+    <p *ngIf="!loading && organizaciones.length === 0">No hay organizaciones registradas.</p>
+  </div>
+
+  <button class="btn" (click)="logout()">Cerrar sesión</button>
+</div>
